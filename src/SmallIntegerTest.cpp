@@ -149,7 +149,7 @@ public:
   }
 
   int64_t getSmallAs64() const {
-    return (int64_t)val;
+    return (int64_t)(uint32_t)val;
   }
 
   SmallInteger_2 &operator=(int32_t that) {
