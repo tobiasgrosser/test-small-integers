@@ -198,66 +198,66 @@ SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2 rhs)
 
 #define ELEMENTS 16
 
-int64_t I64_A[ELEMENTS * 32];
-int64_t I64_B[ELEMENTS * 32];
-int64_t I64_C[ELEMENTS * 32];
+int64_t A_I64[ELEMENTS * 32];
+int64_t B_I64[ELEMENTS * 32];
+int64_t C_I64[ELEMENTS * 32];
 
-static void I64_SparseCopy(benchmark::State &state) {
+static void SparseCopy_I64(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    I64_A[i] = i;
+    A_I64[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      I64_B[32 * i] = I64_A[32 * i];
+      B_I64[32 * i] = A_I64[32 * i];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(I64_SparseCopy);
+BENCHMARK(SparseCopy_I64);
 
-static void I64_SparseZeroCheck(benchmark::State &state) {
+static void SparseZeroCheck_I64(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    I64_A[i] = 0;
+    A_I64[i] = 0;
   benchmark::ClobberMemory();
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (I64_A[32 * i] != 0)
+      if (A_I64[32 * i] != 0)
         printf("Unexpected non-zero encountered");
 }
 
-BENCHMARK(I64_SparseZeroCheck);
+BENCHMARK(SparseZeroCheck_I64);
 
-static void I64_SparseAdd(benchmark::State &state) {
+static void SparseAdd_I64(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    I64_A[i] = i;
+    A_I64[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      I64_C[32 * i] = I64_A[32 * i] + I64_B[32 * i + 1];
+      C_I64[32 * i] = A_I64[32 * i] + B_I64[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(I64_SparseAdd);
+BENCHMARK(SparseAdd_I64);
 
 
 
-static void I64_SparseAddOne(benchmark::State &state) {
+static void SparseAddOne_I64(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    I64_A[i] = i;
+    A_I64[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      I64_A[32 * i] = I64_A[32 * i] + 1;
+      A_I64[32 * i] = A_I64[32 * i] + 1;
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(I64_SparseAddOne);
+BENCHMARK(SparseAddOne_I64);
 
 
 
@@ -265,71 +265,71 @@ BENCHMARK(I64_SparseAddOne);
 
 
 
-SmallInteger_sioimath SI_sioimath_A[ELEMENTS * 32];
-SmallInteger_sioimath SI_sioimath_B[ELEMENTS * 32];
-SmallInteger_sioimath SI_sioimath_C[ELEMENTS * 32];
+SmallInteger_sioimath A_SI_sioimath[ELEMENTS * 32];
+SmallInteger_sioimath B_SI_sioimath[ELEMENTS * 32];
+SmallInteger_sioimath C_SI_sioimath[ELEMENTS * 32];
 
-static void SI_sioimath_SparseCopy(benchmark::State &state) {
+static void SparseCopy_SI_sioimath(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_sioimath_A[i] = i;
-    SI_sioimath_B[i] = 0;
+    A_SI_sioimath[i] = i;
+    B_SI_sioimath[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_sioimath_B[32 * i] = SI_sioimath_A[32 * i];
+      B_SI_sioimath[32 * i] = A_SI_sioimath[32 * i];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_sioimath_SparseCopy);
+BENCHMARK(SparseCopy_SI_sioimath);
 
-static void SI_sioimath_SparseZeroCheck(benchmark::State &state) {
+static void SparseZeroCheck_SI_sioimath(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_sioimath_A[i] = 0;
+    A_SI_sioimath[i] = 0;
   benchmark::ClobberMemory();
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!SI_sioimath_A[32 * i].isZero())
+      if (!A_SI_sioimath[32 * i].isZero())
         printf("Unexpected zero encountered");
 }
 
-BENCHMARK(SI_sioimath_SparseZeroCheck);
+BENCHMARK(SparseZeroCheck_SI_sioimath);
 
-static void SI_sioimath_SparseAdd(benchmark::State &state) {
+static void SparseAdd_SI_sioimath(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_sioimath_A[i] = i;
-    SI_sioimath_B[i] = 0;
+    A_SI_sioimath[i] = i;
+    B_SI_sioimath[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_sioimath_B[32 * i] = SI_sioimath_A[32 * i] + SI_sioimath_A[32 * i + 1];
+      B_SI_sioimath[32 * i] = A_SI_sioimath[32 * i] + A_SI_sioimath[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_sioimath_SparseAdd);
+BENCHMARK(SparseAdd_SI_sioimath);
 
-static void SI_sioimath_SparseAddOne(benchmark::State &state) {
+static void SparseAddOne_SI_sioimath(benchmark::State &state) {
   SmallInteger_sioimath One;
   One = 1;
 
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_sioimath_A[i] = i;
+    A_SI_sioimath[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_sioimath_A[32 * i] = SI_sioimath_A[32 * i] + One;
+      A_SI_sioimath[32 * i] = A_SI_sioimath[32 * i] + One;
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_sioimath_SparseAddOne);
+BENCHMARK(SparseAddOne_SI_sioimath);
 
 
 
@@ -344,145 +344,145 @@ BENCHMARK(SI_sioimath_SparseAddOne);
 
 
 
-SmallInteger_1 SI_1_A[ELEMENTS * 32];
-SmallInteger_1 SI_1_B[ELEMENTS * 32];
-SmallInteger_1 SI_1_C[ELEMENTS * 32];
+SmallInteger_1 A_SI_1[ELEMENTS * 32];
+SmallInteger_1 B_SI_1[ELEMENTS * 32];
+SmallInteger_1 C_SI_1[ELEMENTS * 32];
 
-static void SI_1_SparseCopy(benchmark::State &state) {
+static void SparseCopy_SI_1(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_1_A[i] = i;
-    SI_1_B[i] = 0;
+    A_SI_1[i] = i;
+    B_SI_1[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_1_B[32 * i] = SI_1_A[32 * i];
+      B_SI_1[32 * i] = A_SI_1[32 * i];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_1_SparseCopy);
+BENCHMARK(SparseCopy_SI_1);
 
-static void SI_1_SparseZeroCheck(benchmark::State &state) {
+static void SparseZeroCheck_SI_1(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_1_A[i] = 0;
+    A_SI_1[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!SI_1_A[32 * i].isZero())
+      if (!A_SI_1[32 * i].isZero())
         printf("Unexpected zero encountered");
 }
 
-BENCHMARK(SI_1_SparseZeroCheck);
+BENCHMARK(SparseZeroCheck_SI_1);
 
-static void SI_1_SparseAdd(benchmark::State &state) {
+static void SparseAdd_SI_1(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_1_A[i] = i;
-    SI_1_B[i] = 0;
+    A_SI_1[i] = i;
+    B_SI_1[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_1_B[32 * i] = SI_1_A[32 * i] + SI_1_A[32 * i + 1];
+      B_SI_1[32 * i] = A_SI_1[32 * i] + A_SI_1[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_1_SparseAdd);
+BENCHMARK(SparseAdd_SI_1);
 
 
-static void SI_1_SparseAddOne(benchmark::State &state) {
+static void SparseAddOne_SI_1(benchmark::State &state) {
   SmallInteger_1 One ;
   One = 1;
 
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_1_A[i] = i;
+    A_SI_1[i] = i;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_1_A[32 * i] = SI_1_A[32 * i] + One;
+      A_SI_1[32 * i] = A_SI_1[32 * i] + One;
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_1_SparseAddOne);
+BENCHMARK(SparseAddOne_SI_1);
 
 
 
 
 
 
-SmallInteger_2 SI_2_A[ELEMENTS * 32];
-SmallInteger_2 SI_2_B[ELEMENTS * 32];
+SmallInteger_2 A_SI_2[ELEMENTS * 32];
+SmallInteger_2 B_SI_2[ELEMENTS * 32];
 
-static void SI_2_SparseCopy(benchmark::State &state) {
+static void SparseCopy_SI_2(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_2_A[i] = i;
-    SI_2_B[i] = 0;
+    A_SI_2[i] = i;
+    B_SI_2[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_2_B[32 * i] = SI_2_A[32 * i];
+      B_SI_2[32 * i] = A_SI_2[32 * i];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_2_SparseCopy);
+BENCHMARK(SparseCopy_SI_2);
 
-static void SI_2_SparseZeroCheck(benchmark::State &state) {
+static void SparseZeroCheck_SI_2(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_2_A[i] = 0;
+    A_SI_2[i] = 0;
   benchmark::ClobberMemory();
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!SI_2_A[32 * i].isZero())
+      if (!A_SI_2[32 * i].isZero())
         printf("Unexpected zero encountered");
 }
 
-BENCHMARK(SI_2_SparseZeroCheck);
+BENCHMARK(SparseZeroCheck_SI_2);
 
-static void SI_2_SparseAdd(benchmark::State &state) {
+static void SparseAdd_SI_2(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_2_A[i] = i;
-    SI_2_B[i] = 0;
+    A_SI_2[i] = i;
+    B_SI_2[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_2_B[32 * i] = SI_2_A[32 * i] + SI_2_A[32 * i + 1];
+      B_SI_2[32 * i] = A_SI_2[32 * i] + A_SI_2[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_2_SparseAdd);
+BENCHMARK(SparseAdd_SI_2);
 
 
-static void SI_2_SparseAddOne(benchmark::State &state) {
+static void SparseAddOne_SI_2(benchmark::State &state) {
   SmallInteger_2 One ;
   One = 1;
 
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_2_A[i] = i;
+    A_SI_2[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_2_A[32 * i] = SI_2_A[32 * i] + One;
+      A_SI_2[32 * i] = A_SI_2[32 * i] + One;
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_2_SparseAddOne);
+BENCHMARK(SparseAddOne_SI_2);
 
 
 
