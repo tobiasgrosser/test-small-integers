@@ -6,16 +6,16 @@
 
 
 
-
+#define unsupported(X)
 
 
 class SmallInteger_sioimath {
 public:
   uint64_t val;
 
-  SmallInteger_sioimath() : val(0) {}
+  SmallInteger_sioimath() : val(1) {}
 
-  bool isZero() { return val == 0; }
+  bool isZero() { return val == 1; }
 
   bool isSmall() const {
 	  return val & 0x00000001;
@@ -27,26 +27,26 @@ public:
 
   SmallInteger_sioimath &operator=(int32_t that) {
     if (isSmall()) {
-      val = (uint32_t)that;
+      val = (((uint64_t)(uint32_t)that)  << 32) + 1;
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 
-  SmallInteger_sioimath &operator=(const SmallInteger_sioimath &that) {
+  SmallInteger_sioimath &operator=(const SmallInteger_sioimath that) {
     if (isSmall() && that.isSmall()) {
       val = that.val;
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 };
 
-SmallInteger_sioimath operator+(const SmallInteger_sioimath lhs, const SmallInteger_sioimath& rhs)
+SmallInteger_sioimath operator+(const SmallInteger_sioimath lhs, const SmallInteger_sioimath rhs)
 {
   SmallInteger_sioimath res;
 
@@ -58,7 +58,7 @@ SmallInteger_sioimath operator+(const SmallInteger_sioimath lhs, const SmallInte
 	  res = res_small;
 	  return res;
   }
-  printf("Not yet supported");
+  unsupported("Not yet supported3");
   return res;
 }
 
@@ -91,24 +91,23 @@ public:
   }
 
   SmallInteger_1 &operator=(int32_t val) {
-
     if (isSmall()) {
       int64_t extended = val;
       memcpy(&data, &extended, 8);
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 
-  SmallInteger_1 &operator=(const SmallInteger_1 &val) {
+  SmallInteger_1 &operator=(const SmallInteger_1 val) {
     if (isSmall() && val.isSmall()) {
       data = val.data;
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 };
@@ -127,7 +126,8 @@ SmallInteger_1 operator+(const SmallInteger_1 lhs, const SmallInteger_1& rhs)
 	res = res_small;
 	return res;
     }
-    printf("Not yet supported");
+    
+    unsupported("Not yet supported");
     return res;
 }
 
@@ -158,22 +158,22 @@ public:
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 
-  SmallInteger_2 &operator=(const SmallInteger_2 &that) {
+  SmallInteger_2 &operator=(const SmallInteger_2 that) {
     if (isSmall() && that.isSmall()) {
       val = that.val;
       return *this;
     }
 
-    printf("Not yet supported");
+    unsupported("Not yet supported");
     return *this;
   }
 };
 
-SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2& rhs)
+SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2 rhs)
 {
   SmallInteger_2 res;
 
@@ -185,7 +185,8 @@ SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2& rhs)
 	  res = res_small;
 	  return res;
   }
-  printf("Not yet supported");
+  
+  unsupported("Not yet supported");
   return res;
 }
 
@@ -199,6 +200,7 @@ SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2& rhs)
 
 int64_t I64_A[ELEMENTS * 32];
 int64_t I64_B[ELEMENTS * 32];
+int64_t I64_C[ELEMENTS * 32];
 
 static void I64_SparseCopy(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
@@ -234,7 +236,7 @@ static void I64_SparseAdd(benchmark::State &state) {
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      I64_B[32 * i] = I64_A[32 * i] + I64_A[32 * i + 1];
+      I64_C[32 * i] = I64_A[32 * i] + I64_B[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
@@ -243,17 +245,35 @@ BENCHMARK(I64_SparseAdd);
 
 
 
+static void I64_SparseAddOne(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    I64_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      I64_A[32 * i] = I64_A[32 * i] + 1;
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(I64_SparseAddOne);
 
 
 
 
 
-SmallInteger_1 SI_sioimath_A[ELEMENTS * 32];
-SmallInteger_1 SI_sioimath_B[ELEMENTS * 32];
+
+
+SmallInteger_sioimath SI_sioimath_A[ELEMENTS * 32];
+SmallInteger_sioimath SI_sioimath_B[ELEMENTS * 32];
+SmallInteger_sioimath SI_sioimath_C[ELEMENTS * 32];
 
 static void SI_sioimath_SparseCopy(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_sioimath_A[i] = i;
+    SI_sioimath_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -279,8 +299,10 @@ static void SI_sioimath_SparseZeroCheck(benchmark::State &state) {
 BENCHMARK(SI_sioimath_SparseZeroCheck);
 
 static void SI_sioimath_SparseAdd(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_sioimath_A[i] = i;
+    SI_sioimath_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -291,6 +313,24 @@ static void SI_sioimath_SparseAdd(benchmark::State &state) {
 }
 
 BENCHMARK(SI_sioimath_SparseAdd);
+
+static void SI_sioimath_SparseAddOne(benchmark::State &state) {
+  SmallInteger_sioimath One;
+  One = 1;
+
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_sioimath_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_sioimath_A[32 * i] = SI_sioimath_A[32 * i] + One;
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_sioimath_SparseAddOne);
+
 
 
 
@@ -306,10 +346,13 @@ BENCHMARK(SI_sioimath_SparseAdd);
 
 SmallInteger_1 SI_1_A[ELEMENTS * 32];
 SmallInteger_1 SI_1_B[ELEMENTS * 32];
+SmallInteger_1 SI_1_C[ELEMENTS * 32];
 
 static void SI_1_SparseCopy(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_1_A[i] = i;
+    SI_1_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -322,8 +365,9 @@ static void SI_1_SparseCopy(benchmark::State &state) {
 BENCHMARK(SI_1_SparseCopy);
 
 static void SI_1_SparseZeroCheck(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_1_A[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state)
@@ -335,8 +379,10 @@ static void SI_1_SparseZeroCheck(benchmark::State &state) {
 BENCHMARK(SI_1_SparseZeroCheck);
 
 static void SI_1_SparseAdd(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_1_A[i] = i;
+    SI_1_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -349,6 +395,23 @@ static void SI_1_SparseAdd(benchmark::State &state) {
 BENCHMARK(SI_1_SparseAdd);
 
 
+static void SI_1_SparseAddOne(benchmark::State &state) {
+  SmallInteger_1 One ;
+  One = 1;
+
+  for (int i = 0; i < ELEMENTS * 32; i++) {
+    SI_1_A[i] = i;
+  }
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_1_A[32 * i] = SI_1_A[32 * i] + One;
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_1_SparseAddOne);
 
 
 
@@ -359,8 +422,10 @@ SmallInteger_2 SI_2_A[ELEMENTS * 32];
 SmallInteger_2 SI_2_B[ELEMENTS * 32];
 
 static void SI_2_SparseCopy(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_2_A[i] = i;
+    SI_2_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -386,8 +451,10 @@ static void SI_2_SparseZeroCheck(benchmark::State &state) {
 BENCHMARK(SI_2_SparseZeroCheck);
 
 static void SI_2_SparseAdd(benchmark::State &state) {
-  for (int i = 0; i < ELEMENTS * 32; i++)
+  for (int i = 0; i < ELEMENTS * 32; i++) {
     SI_2_A[i] = i;
+    SI_2_B[i] = 0;
+  }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
@@ -400,7 +467,22 @@ static void SI_2_SparseAdd(benchmark::State &state) {
 BENCHMARK(SI_2_SparseAdd);
 
 
+static void SI_2_SparseAddOne(benchmark::State &state) {
+  SmallInteger_2 One ;
+  One = 1;
 
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_2_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_2_A[32 * i] = SI_2_A[32 * i] + One;
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_2_SparseAddOne);
 
 
 
