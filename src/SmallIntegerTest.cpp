@@ -4,6 +4,72 @@
 #include <limits>
 #include <stdio.h>
 
+
+
+
+
+
+class SmallInteger_sioimath {
+public:
+  uint64_t val;
+
+  SmallInteger_sioimath() : val(0) {}
+
+  bool isZero() { return val == 0; }
+
+  bool isSmall() const {
+	  return val & 0x00000001;
+  }
+
+  int64_t getSmallAs64() const {
+	  return (int32_t)(val >> 32);
+  }
+
+  SmallInteger_sioimath &operator=(int32_t that) {
+    if (isSmall()) {
+      val = (uint32_t)that;
+      return *this;
+    }
+
+    printf("Not yet supported");
+    return *this;
+  }
+
+  SmallInteger_sioimath &operator=(const SmallInteger_sioimath &that) {
+    if (isSmall() && that.isSmall()) {
+      val = that.val;
+      return *this;
+    }
+
+    printf("Not yet supported");
+    return *this;
+  }
+};
+
+SmallInteger_sioimath operator+(const SmallInteger_sioimath lhs, const SmallInteger_sioimath& rhs)
+{
+  SmallInteger_sioimath res;
+
+  if (lhs.isSmall() && rhs.isSmall()) {
+	  int64_t lhs_small = lhs.getSmallAs64();
+	  int64_t rhs_small = rhs.getSmallAs64();
+	  int64_t res_small = lhs_small + rhs_small;
+
+	  res = res_small;
+	  return res;
+  }
+  printf("Not yet supported");
+  return res;
+}
+
+
+
+
+
+
+
+
+
 class SmallInteger_1 {
 public:
   uint64_t data;
@@ -64,6 +130,9 @@ SmallInteger_1 operator+(const SmallInteger_1 lhs, const SmallInteger_1& rhs)
     printf("Not yet supported");
     return res;
 }
+
+
+
 
 
 
@@ -171,6 +240,69 @@ static void I64_SparseAdd(benchmark::State &state) {
 }
 
 BENCHMARK(I64_SparseAdd);
+
+
+
+
+
+
+
+
+SmallInteger_1 SI_sioimath_A[ELEMENTS * 32];
+SmallInteger_1 SI_sioimath_B[ELEMENTS * 32];
+
+static void SI_sioimath_SparseCopy(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_sioimath_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_sioimath_B[32 * i] = SI_sioimath_A[32 * i];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_sioimath_SparseCopy);
+
+static void SI_sioimath_SparseZeroCheck(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_sioimath_A[i] = 0;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state)
+    for (int i = 0; i < ELEMENTS; i++)
+      if (!SI_sioimath_A[32 * i].isZero())
+        printf("Unexpected zero encountered");
+}
+
+BENCHMARK(SI_sioimath_SparseZeroCheck);
+
+static void SI_sioimath_SparseAdd(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_sioimath_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_sioimath_B[32 * i] = SI_sioimath_A[32 * i] + SI_sioimath_A[32 * i + 1];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_sioimath_SparseAdd);
+
+
+
+
+
+
+
+
+
+
+
+
 
 SmallInteger_1 SI_1_A[ELEMENTS * 32];
 SmallInteger_1 SI_1_B[ELEMENTS * 32];
