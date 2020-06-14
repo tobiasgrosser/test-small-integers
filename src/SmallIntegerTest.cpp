@@ -47,6 +47,8 @@ public:
   }
 };
 
+
+
 SmallInteger_1 operator+(const SmallInteger_1 lhs, const SmallInteger_1& rhs)
 {
     SmallInteger_1 res;
@@ -62,6 +64,66 @@ SmallInteger_1 operator+(const SmallInteger_1 lhs, const SmallInteger_1& rhs)
     printf("Not yet supported");
     return res;
 }
+
+
+
+class SmallInteger_2 {
+public:
+  uint64_t val;
+
+  SmallInteger_2() : val(0) {}
+
+  bool isZero() { return val == 0; }
+
+  bool isSmall() const {
+	  return !((val >> 32) & 0x00000001);
+  }
+
+  int64_t getSmallAs64() const {
+    return (int64_t)val;
+  }
+
+  SmallInteger_2 &operator=(int32_t that) {
+    if (isSmall()) {
+      val = (uint32_t)that;
+      return *this;
+    }
+
+    printf("Not yet supported");
+    return *this;
+  }
+
+  SmallInteger_2 &operator=(const SmallInteger_2 &that) {
+    if (isSmall() && that.isSmall()) {
+      val = that.val;
+      return *this;
+    }
+
+    printf("Not yet supported");
+    return *this;
+  }
+};
+
+SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2& rhs)
+{
+  SmallInteger_2 res;
+
+  if (lhs.isSmall() && rhs.isSmall()) {
+	  int64_t lhs_small = lhs.getSmallAs64();
+	  int64_t rhs_small = rhs.getSmallAs64();
+	  int64_t res_small = lhs_small + rhs_small;
+
+	  res = res_small;
+	  return res;
+  }
+  printf("Not yet supported");
+  return res;
+}
+
+
+
+
+
 
 
 #define ELEMENTS 16
@@ -153,5 +215,66 @@ static void SI_1_SparseAdd(benchmark::State &state) {
 }
 
 BENCHMARK(SI_1_SparseAdd);
+
+
+
+
+
+
+
+
+SmallInteger_2 SI_2_A[ELEMENTS * 32];
+SmallInteger_2 SI_2_B[ELEMENTS * 32];
+
+static void SI_2_SparseCopy(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_2_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_2_B[32 * i] = SI_2_A[32 * i];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_2_SparseCopy);
+
+static void SI_2_SparseZeroCheck(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_2_A[i] = 0;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state)
+    for (int i = 0; i < ELEMENTS; i++)
+      if (!SI_2_A[32 * i].isZero())
+        printf("Unexpected zero encountered");
+}
+
+BENCHMARK(SI_2_SparseZeroCheck);
+
+static void SI_2_SparseAdd(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_2_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_2_B[32 * i] = SI_2_A[32 * i] + SI_2_A[32 * i + 1];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_2_SparseAdd);
+
+
+
+
+
+
+
+
+
+
 
 BENCHMARK_MAIN();
