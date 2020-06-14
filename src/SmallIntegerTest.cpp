@@ -196,6 +196,91 @@ SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2 rhs)
 
 
 
+#define FLAG (1ul << 62)
+
+inline bool isl_sioimath_is_big_tobig(uint64_t val)
+{
+
+	    int64_t val_s;
+        int64_t flag_s;
+        uint64_t flag_u = FLAG;
+        memcpy(&flag_s, &flag_u, 8);
+        memcpy(&val_s, &val, 8);
+        return val_s > std::numeric_limits<int32_t>::max();
+}
+
+inline uint64_t isl_sioimath_encode_small_tobig(int32_t val)
+{
+        uint32_t val_u;
+        memcpy(&val_u, &val, 4);
+        return ((uint64_t) val_u);
+}
+
+
+class SmallInteger_3 {
+public:
+  uint64_t val;
+
+  SmallInteger_3() : val(0) {}
+
+  bool isZero() { return val == 0; }
+
+  bool isSmall() const {
+	  return !isl_sioimath_is_big_tobig(val);
+  }
+
+  int64_t getSmallAs64() const {
+    return (int64_t)(uint32_t)val;
+  }
+
+  SmallInteger_3 &operator=(int32_t that) {
+    if (isSmall()) {
+      val = isl_sioimath_encode_small_tobig(that);
+      return *this;
+    }
+
+    unsupported("Not yet supported");
+    return *this;
+  }
+
+  SmallInteger_3 &operator=(const SmallInteger_3 that) {
+    if (isSmall() && that.isSmall()) {
+      val = that.val;
+      return *this;
+    }
+
+    unsupported("Not yet supported");
+    return *this;
+  }
+};
+
+SmallInteger_3 operator+(const SmallInteger_3 lhs, const SmallInteger_3 rhs)
+{
+  SmallInteger_3 res;
+
+  if (lhs.isSmall() && rhs.isSmall()) {
+	  int64_t lhs_small = lhs.getSmallAs64();
+	  int64_t rhs_small = rhs.getSmallAs64();
+	  int64_t res_small = lhs_small + rhs_small;
+
+	  res = res_small;
+	  return res;
+  }
+  
+  unsupported("Not yet supported");
+  return res;
+}
+
+
+
+
+
+
+
+
+
+
+
 #define ELEMENTS 16
 
 int64_t I64_A[ELEMENTS * 32];
@@ -484,6 +569,77 @@ static void SI_2_SparseAddOne(benchmark::State &state) {
 
 BENCHMARK(SI_2_SparseAddOne);
 
+
+
+
+
+
+SmallInteger_3 SI_3_A[ELEMENTS * 32];
+SmallInteger_3 SI_3_B[ELEMENTS * 32];
+SmallInteger_3 SI_3_C[ELEMENTS * 32];
+
+static void SI_3_SparseCopy(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++) {
+    SI_3_A[i] = i;
+    SI_3_B[i] = 0;
+  }
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_3_B[32 * i] = SI_3_A[32 * i];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_3_SparseCopy);
+
+static void SI_3_SparseZeroCheck(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_3_A[i] = 0;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state)
+    for (int i = 0; i < ELEMENTS; i++)
+      if (!SI_3_A[32 * i].isZero())
+        printf("Unexpected zero encountered");
+}
+
+BENCHMARK(SI_3_SparseZeroCheck);
+
+static void SI_3_SparseAdd(benchmark::State &state) {
+  for (int i = 0; i < ELEMENTS * 32; i++) {
+    SI_3_A[i] = i;
+    SI_3_B[i] = 0;
+  }
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_3_B[32 * i] = SI_3_A[32 * i] + SI_3_A[32 * i + 1];
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_3_SparseAdd);
+
+
+static void SI_3_SparseAddOne(benchmark::State &state) {
+  SmallInteger_3 One ;
+  One = 1;
+
+  for (int i = 0; i < ELEMENTS * 32; i++)
+    SI_3_A[i] = i;
+  benchmark::ClobberMemory();
+
+  for (auto _ : state) {
+    for (int i = 0; i < ELEMENTS; i++)
+      SI_3_A[32 * i] = SI_3_A[32 * i] + One;
+    benchmark::ClobberMemory();
+  }
+}
+
+BENCHMARK(SI_3_SparseAddOne);
 
 
 
