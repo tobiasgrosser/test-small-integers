@@ -574,72 +574,72 @@ BENCHMARK(SparseAddOne_SI_2);
 
 
 
-SmallInteger_3 SI_3_A[ELEMENTS * 32];
-SmallInteger_3 SI_3_B[ELEMENTS * 32];
-SmallInteger_3 SI_3_C[ELEMENTS * 32];
+SmallInteger_3 A_SI_3[ELEMENTS * 32];
+SmallInteger_3 B_SI_3[ELEMENTS * 32];
+SmallInteger_3 C_SI_3[ELEMENTS * 32];
 
-static void SI_3_SparseCopy(benchmark::State &state) {
+static void SparseCopy_SI_3(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_3_A[i] = i;
-    SI_3_B[i] = 0;
+    A_SI_3[i] = i;
+    B_SI_3[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_3_B[32 * i] = SI_3_A[32 * i];
+      B_SI_3[32 * i] = A_SI_3[32 * i];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_3_SparseCopy);
+BENCHMARK(SparseCopy_SI_3);
 
-static void SI_3_SparseZeroCheck(benchmark::State &state) {
+static void SparseZeroCheck_SI_3(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_3_A[i] = 0;
+    A_SI_3[i] = 0;
   benchmark::ClobberMemory();
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!SI_3_A[32 * i].isZero())
+      if (!A_SI_3[32 * i].isZero())
         printf("Unexpected zero encountered");
 }
 
-BENCHMARK(SI_3_SparseZeroCheck);
+BENCHMARK(SparseZeroCheck_SI_3);
 
-static void SI_3_SparseAdd(benchmark::State &state) {
+static void SparseAdd_SI_3(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
-    SI_3_A[i] = i;
-    SI_3_B[i] = 0;
+    A_SI_3[i] = i;
+    B_SI_3[i] = 0;
   }
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_3_B[32 * i] = SI_3_A[32 * i] + SI_3_A[32 * i + 1];
+      B_SI_3[32 * i] = A_SI_3[32 * i] + A_SI_3[32 * i + 1];
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_3_SparseAdd);
+BENCHMARK(SparseAdd_SI_3);
 
 
-static void SI_3_SparseAddOne(benchmark::State &state) {
+static void SparseAddOne_SI_3(benchmark::State &state) {
   SmallInteger_3 One ;
   One = 1;
 
   for (int i = 0; i < ELEMENTS * 32; i++)
-    SI_3_A[i] = i;
+    A_SI_3[i] = i;
   benchmark::ClobberMemory();
 
   for (auto _ : state) {
     for (int i = 0; i < ELEMENTS; i++)
-      SI_3_A[32 * i] = SI_3_A[32 * i] + One;
+      A_SI_3[32 * i] = A_SI_3[32 * i] + One;
     benchmark::ClobberMemory();
   }
 }
 
-BENCHMARK(SI_3_SparseAddOne);
+BENCHMARK(SparseAddOne_SI_3);
 
 
 
