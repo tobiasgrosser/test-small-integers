@@ -314,7 +314,7 @@ static void SparseZeroCheck_I64(benchmark::State &state) {
 
 BENCHMARK(SparseZeroCheck_I64);
 
-static void SparseAdd_I64(benchmark::State &state) {
+static void SparseAddPair_I64(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++)
     A_I64[i] = i;
   benchmark::ClobberMemory();
@@ -326,7 +326,7 @@ static void SparseAdd_I64(benchmark::State &state) {
   }
 }
 
-BENCHMARK(SparseAdd_I64);
+BENCHMARK(SparseAddPair_I64);
 
 
 
@@ -383,7 +383,7 @@ static void SparseZeroCheck_SI_sioimath(benchmark::State &state) {
 
 BENCHMARK(SparseZeroCheck_SI_sioimath);
 
-static void SparseAdd_SI_sioimath(benchmark::State &state) {
+static void SparseAddPair_SI_sioimath(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
     A_SI_sioimath[i] = i;
     B_SI_sioimath[i] = 0;
@@ -397,7 +397,7 @@ static void SparseAdd_SI_sioimath(benchmark::State &state) {
   }
 }
 
-BENCHMARK(SparseAdd_SI_sioimath);
+BENCHMARK(SparseAddPair_SI_sioimath);
 
 static void SparseAddOne_SI_sioimath(benchmark::State &state) {
   SmallInteger_sioimath One;
@@ -463,7 +463,7 @@ static void SparseZeroCheck_SI_1(benchmark::State &state) {
 
 BENCHMARK(SparseZeroCheck_SI_1);
 
-static void SparseAdd_SI_1(benchmark::State &state) {
+static void SparseAddPair_SI_1(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
     A_SI_1[i] = i;
     B_SI_1[i] = 0;
@@ -477,7 +477,7 @@ static void SparseAdd_SI_1(benchmark::State &state) {
   }
 }
 
-BENCHMARK(SparseAdd_SI_1);
+BENCHMARK(SparseAddPair_SI_1);
 
 
 static void SparseAddOne_SI_1(benchmark::State &state) {
@@ -535,7 +535,7 @@ static void SparseZeroCheck_SI_2(benchmark::State &state) {
 
 BENCHMARK(SparseZeroCheck_SI_2);
 
-static void SparseAdd_SI_2(benchmark::State &state) {
+static void SparseAddPair_SI_2(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
     A_SI_2[i] = i;
     B_SI_2[i] = 0;
@@ -549,7 +549,7 @@ static void SparseAdd_SI_2(benchmark::State &state) {
   }
 }
 
-BENCHMARK(SparseAdd_SI_2);
+BENCHMARK(SparseAddPair_SI_2);
 
 
 static void SparseAddOne_SI_2(benchmark::State &state) {
@@ -607,7 +607,7 @@ static void SparseZeroCheck_SI_3(benchmark::State &state) {
 
 BENCHMARK(SparseZeroCheck_SI_3);
 
-static void SparseAdd_SI_3(benchmark::State &state) {
+static void SparseAddPair_SI_3(benchmark::State &state) {
   for (int i = 0; i < ELEMENTS * 32; i++) {
     A_SI_3[i] = i;
     B_SI_3[i] = 0;
@@ -621,7 +621,7 @@ static void SparseAdd_SI_3(benchmark::State &state) {
   }
 }
 
-BENCHMARK(SparseAdd_SI_3);
+BENCHMARK(SparseAddPair_SI_3);
 
 
 static void SparseAddOne_SI_3(benchmark::State &state) {
