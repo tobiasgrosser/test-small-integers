@@ -7,6 +7,8 @@ project(SmallIntegers)
 add_subdirectory(googletest)
 add_subdirectory(benchmark)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+
 # Add a library to this build. The name of the library is MyLibrary and it
 # consists of only the MyLibrary.cpp file
 add_executable(SmallIntegerBench src/SmallIntegerBench.cpp)
