@@ -28,6 +28,17 @@ TYPED_TEST(TestSI, CreateOne) {
   EXPECT_TRUE(One.isZero());
 }
 
+TYPED_TEST(TestSI, Add) {
+  TypeParam One;
+  One = 1;
+  TypeParam Two;
+  Two = 2;
+  TypeParam Three;
+  Three = 3;
+  EXPECT_EQ(One + Two, Three);
+  EXPECT_NE(One, Two);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
