@@ -9,5 +9,5 @@ add_subdirectory(benchmark)
 
 # Add a library to this build. The name of the library is MyLibrary and it
 # consists of only the MyLibrary.cpp file
-add_executable(SmallIntegerTest src/SmallIntegerTest.cpp)
-target_link_libraries(SmallIntegerTest benchmark::benchmark)
+add_executable(SmallIntegerBench src/SmallIntegerBench.cpp)
+target_link_libraries(SmallIntegerBench benchmark::benchmark)
