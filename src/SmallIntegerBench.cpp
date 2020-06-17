@@ -28,7 +28,7 @@ static void SparseZeroCheck_I64(benchmark::State &state) {
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (A_I64[32 * i] != 0)
+      if (__builtin_expect(A_I64[32 * i] != 0, false))
         printf("Unexpected non-zero encountered");
 }
 
@@ -97,7 +97,7 @@ static void SparseZeroCheck_SI_sioimath(benchmark::State &state) {
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!A_SI_sioimath[32 * i].isZero())
+      if (!__builtin_expect(A_SI_sioimath[32 * i].isZero(), true))
         printf("Unexpected zero encountered");
 }
 
@@ -177,7 +177,7 @@ static void SparseZeroCheck_SI_1(benchmark::State &state) {
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!A_SI_1[32 * i].isZero())
+      if (!__builtin_expect(A_SI_1[32 * i].isZero(), true))
         printf("Unexpected zero encountered");
 }
 
@@ -249,7 +249,7 @@ static void SparseZeroCheck_SI_2(benchmark::State &state) {
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!A_SI_2[32 * i].isZero())
+      if (!__builtin_expect(A_SI_2[32 * i].isZero(), true))
         printf("Unexpected zero encountered");
 }
 
@@ -321,7 +321,7 @@ static void SparseZeroCheck_SI_3(benchmark::State &state) {
 
   for (auto _ : state)
     for (int i = 0; i < ELEMENTS; i++)
-      if (!A_SI_3[32 * i].isZero())
+      if (!__builtin_expect(A_SI_3[32 * i].isZero(), true))
         printf("Unexpected zero encountered");
 }
 
