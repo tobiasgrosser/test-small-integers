@@ -31,7 +31,7 @@ public:
   }
 
   SmallInteger_sioimath &operator=(const SmallInteger_sioimath that) {
-    if (isSmall() && that.isSmall()) {
+    if (__builtin_expect(isSmall() && that.isSmall(), true)) {
       data = that.data;
       return *this;
     }
@@ -87,7 +87,7 @@ public:
   }
 
   SmallInteger_1 &operator=(const SmallInteger_1 val) {
-    if (isSmall() && val.isSmall()) {
+    if (__builtin_expect(isSmall() && val.isSmall(), true)) {
       data = val.data;
       return *this;
     }
@@ -134,7 +134,7 @@ public:
   }
 
   SmallInteger_2 &operator=(const SmallInteger_2 that) {
-    if (isSmall() && that.isSmall()) {
+    if (__builtin_expect(isSmall() && that.isSmall(), true)) {
       data = that.data;
       return *this;
     }
@@ -199,7 +199,7 @@ public:
   }
 
   SmallInteger_3 &operator=(const SmallInteger_3 that) {
-    if (isSmall() && that.isSmall()) {
+    if (__builtin_expect(isSmall() && that.isSmall(), true)) {
       data = that.data;
       return *this;
     }
