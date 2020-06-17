@@ -31,12 +31,9 @@ TYPED_TEST(TestSI, CreateOne) {
 TYPED_TEST(TestSI, Add) {
   TypeParam One;
   One = 1;
-  TypeParam Two;
-  Two = 2;
-  TypeParam Three;
-  Three = 3;
-  EXPECT_EQ(One + Two, Three);
-  EXPECT_NE(One, Two);
+  TypeParam NegOne;
+  NegOne = -1;
+  EXPECT_TRUE((One + NegOne).isZero());
 }
 
 int main(int argc, char **argv) {
