@@ -20,6 +20,14 @@ TYPED_TEST(TestSI, CreateZero) {
   EXPECT_TRUE(Zero.isZero());
 }
 
+TYPED_TEST(TestSI, CreateOne) {
+  TypeParam One;
+  One = 1;
+  EXPECT_FALSE(One.isZero());
+  One = 0;
+  EXPECT_TRUE(One.isZero());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
