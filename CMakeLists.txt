@@ -11,3 +11,6 @@ add_subdirectory(benchmark)
 # consists of only the MyLibrary.cpp file
 add_executable(SmallIntegerBench src/SmallIntegerBench.cpp)
 target_link_libraries(SmallIntegerBench benchmark::benchmark)
+
+add_executable(SmallIntegerTest src/SmallIntegerTest.cpp)
+target_link_libraries(SmallIntegerTest gtest_main)
