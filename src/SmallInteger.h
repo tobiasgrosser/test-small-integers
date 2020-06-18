@@ -85,6 +85,16 @@ public:
     unsupported("Not yet supported");
     return *this;
   }
+  
+  SmallInteger_1 &operator=(int64_t val) {
+    if (isSmall()) {
+      memcpy(&data, &val, 8);
+      return *this;
+    }
+
+    unsupported("Not yet supported");
+    return *this;
+  }
 
   SmallInteger_1 &operator=(const SmallInteger_1 val) {
     if (__builtin_expect(isSmall() && val.isSmall(), true)) {
