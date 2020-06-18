@@ -45,7 +45,7 @@ SmallInteger_sioimath operator+(const SmallInteger_sioimath lhs,
                                 const SmallInteger_sioimath rhs) {
   SmallInteger_sioimath res;
 
-  if (lhs.isSmall() && rhs.isSmall()) {
+  if (__builtin_expect(lhs.isSmall() && rhs.isSmall(), true)) {
     int64_t lhs_small = lhs.getSmallAs64();
     int64_t rhs_small = rhs.getSmallAs64();
     int64_t res_small = lhs_small + rhs_small;
@@ -100,7 +100,7 @@ public:
 SmallInteger_1 operator+(const SmallInteger_1 lhs, const SmallInteger_1 &rhs) {
   SmallInteger_1 res;
 
-  if (lhs.isSmall() && rhs.isSmall()) {
+  if (__builtin_expect(lhs.isSmall() && rhs.isSmall(), true)) {
     int64_t lhs_small = lhs.getSmallAs64();
     int64_t rhs_small = rhs.getSmallAs64();
     int64_t res_small = lhs_small + rhs_small;
@@ -147,7 +147,7 @@ public:
 SmallInteger_2 operator+(const SmallInteger_2 lhs, const SmallInteger_2 rhs) {
   SmallInteger_2 res;
 
-  if (lhs.isSmall() && rhs.isSmall()) {
+  if (__builtin_expect(lhs.isSmall() && rhs.isSmall(), true)) {
     int64_t lhs_small = lhs.getSmallAs64();
     int64_t rhs_small = rhs.getSmallAs64();
     int64_t res_small = lhs_small + rhs_small;
@@ -212,7 +212,7 @@ public:
 SmallInteger_3 operator+(const SmallInteger_3 lhs, const SmallInteger_3 rhs) {
   SmallInteger_3 res;
 
-  if (lhs.isSmall() && rhs.isSmall()) {
+  if (__builtin_expect(lhs.isSmall() && rhs.isSmall(), true)) {
     int64_t lhs_small = lhs.getSmallAs64();
     int64_t rhs_small = rhs.getSmallAs64();
     int64_t res_small = lhs_small + rhs_small;
